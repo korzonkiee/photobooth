@@ -70,28 +70,14 @@ class SessionSetupView extends StatelessWidget {
                     child: Wrap(
                       children: [
                         for (final prompt in state.promptList)
-                          InkWell(
+                          PromptCard(
+                            prompt: prompt,
+                            selected: prompt == state.selectedPrompt,
                             onTap: () {
                               context
                                   .read<SessionSetupCubit>()
                                   .selectPrompt(prompt);
                             },
-                            child: Container(
-                              width: 240,
-                              height: 120,
-                              padding: const EdgeInsets.all(8),
-                              child: Card(
-                                color: prompt == state.selectedPrompt
-                                    ? Theme.of(context).primaryColor
-                                    : null,
-                                child: Center(
-                                  child: Text(
-                                    prompt,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
                           ),
                       ],
                     ),
@@ -102,6 +88,40 @@ class SessionSetupView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class PromptCard extends StatelessWidget {
+  const PromptCard({
+    Key? key,
+    required this.prompt,
+    required this.onTap,
+    this.selected = false,
+  }) : super(key: key);
+
+  final String prompt;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 240,
+        height: 120,
+        padding: const EdgeInsets.all(8),
+        child: Card(
+          color: selected ? Theme.of(context).primaryColor : null,
+          child: Center(
+            child: Text(
+              prompt,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
