@@ -4,7 +4,7 @@ const prompts = [
   'Right Out of the Gate',
   'Two Down, One to Go',
   'Not the Sharpest Tool in the Shed',
-  'Don\'t Count Your Chickens Before They Hatch',
+  "Don't Count Your Chickens Before They Hatch",
   'A Little Bird Told Me',
   'A Lemon',
   'A Cold Fish',
