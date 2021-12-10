@@ -122,7 +122,7 @@ class _SessionDebugCard extends StatelessWidget {
                           ],
                         );
                       },
-                    )
+                    ),
                   ],
                 );
               },
