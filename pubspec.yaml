@@ -38,6 +38,7 @@ dependencies:
   rxdart: 0.26.0
   session_repository:
     path: packages/session_repository
+  staggered_grid_view_flutter: 0.0.4
   uuid: 3.0.5
   very_good_analysis: 2.4.0
 

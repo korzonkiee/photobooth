@@ -25,14 +25,18 @@ class SessionSharingPage extends StatelessWidget {
   }
 }
 
-class SessionSharingView extends StatelessWidget {
+class SessionSharingView extends StatefulWidget {
   const SessionSharingView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+  State<SessionSharingView> createState() => _SessionSharingViewState();
+}
 
+class _SessionSharingViewState extends State<SessionSharingView> {
+  @override
+  Widget build(BuildContext context) {
     final state = context.watch<SessionSharingCubit>().state;
+    final prompt = state.session?.prompt;
 
     return BlocListener<SessionSharingCubit, SessionSharingState>(
       listener: (context, state) {
@@ -41,48 +45,56 @@ class SessionSharingView extends StatelessWidget {
         }
       },
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => context.go('/'),
+            icon: const Icon(Icons.home),
+          ),
+          title: Text(prompt == null ? '...' : '"$prompt"'),
+        ),
         body: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 48),
-              Text(
-                'Sharing Page for Session: ${state.sessionId}',
-                style: textTheme.headline2,
-              ),
-              const SizedBox(height: 8),
-              if (state.status == SessionSharingStatus.failure)
-                const Text(
-                  'Error loading session. '
-                  'Are you sure the ID is correct?',
-                )
-              else if (state.session == null)
-                const _LoadingText(
-                  child: Text('Loading session...'),
-                )
-              else ...[
-                const _PromptHeader(),
-                if (state.downloadablePhotoUrls == null)
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                if (state.status == SessionSharingStatus.failure)
+                  const Text(
+                    'Error loading session. '
+                    'Are you sure the ID is correct?',
+                  )
+                else if (state.session == null)
+                  const _LoadingText(
+                    child: Text('Loading session...'),
+                  )
+                else if (state.downloadablePhotoUrls == null)
                   const _LoadingText(
                     child: Text('Downloading photos...'),
                   )
                 else if (state.downloadablePhotoUrls!.isEmpty)
                   const Text('No photos have been uploaded yet.')
                 else
-                  Column(
-                    children: [
-                      for (final url in state.downloadablePhotoUrls!) ...[
-                        Material(
-                          elevation: 2,
-                          borderRadius: BorderRadius.circular(8),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: Image.network(url),
-                        ),
-                        const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final url in state.downloadablePhotoUrls!) ...[
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 500),
+                            child: Material(
+                              elevation: 2,
+                              borderRadius: BorderRadius.circular(8),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: Image.network(url),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-              ]
-            ],
+              ],
+            ),
           ),
         ),
       ),

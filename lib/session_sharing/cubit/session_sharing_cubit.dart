@@ -19,6 +19,12 @@ class SessionSharingCubit extends Cubit<SessionSharingState> {
 
   StreamSubscription<Session>? _sessionSubscription;
 
+  void resetWithId(String sessionId) {
+    emit(SessionSharingState(
+      sessionId: sessionId,
+    ));
+  }
+
   Future<void> subscribe() async {
     await _sessionSubscription?.cancel();
     emit(state.copyWith(status: SessionSharingStatus.loading));

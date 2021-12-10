@@ -19,10 +19,6 @@ class LandingBody extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 48),
-          const Center(
-            child: _SessionDebugCard(),
-          ),
-          const SizedBox(height: 48),
           SelectableText(
             l10n.landingPageHeading,
             key: const Key('landingPage_heading_text'),
@@ -51,84 +47,6 @@ class LandingBody extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SessionDebugCard extends StatelessWidget {
-  const _SessionDebugCard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final repo = context.read<SessionRepository>();
-
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('DEBUG SESSION /sessions/example'),
-            const SizedBox(height: 8),
-            StreamBuilder<Session>(
-              stream: repo.getSession('example'),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(
-                    'Error\n${snapshot.error}\n${snapshot.stackTrace}',
-                  );
-                } else if (!snapshot.hasData) {
-                  return const CupertinoActivityIndicator();
-                }
-
-                final session = snapshot.data!;
-
-                return Column(
-                  children: [
-                    Text('$session'),
-                    const SizedBox(height: 8),
-                    Text('Contains ${session.photoUrls.length} photos.'),
-                    const SizedBox(height: 4),
-                    FutureBuilder<List<String>>(
-                      future: repo.getDownloadUrls(session.photoUrls),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text(
-                            'Error\n${snapshot.error}\n${snapshot.stackTrace}',
-                          );
-                        } else if (!snapshot.hasData) {
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              CupertinoActivityIndicator(),
-                              SizedBox(width: 4),
-                              Text('Downloading URLs...'),
-                            ],
-                          );
-                        }
-
-                        final urls = snapshot.data!;
-
-                        return Column(
-                          children: [
-                            for (final url in urls)
-                              Image.network(
-                                url,
-                                width: 300,
-                              ),
-                          ],
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
