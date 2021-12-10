@@ -10,15 +10,18 @@ enum SessionStatus {
 class SessionState extends Equatable {
   const SessionState({
     required this.status,
+    this.session,
   });
 
   final SessionStatus status;
+  final Session? session;
 
   @override
-  List<Object> get props => [status];
+  List<Object?> get props => [session, status];
 
-  SessionState copyWith({SessionStatus? status}) {
+  SessionState copyWith({Session? session, SessionStatus? status}) {
     return SessionState(
+      session: session ?? this.session,
       status: status ?? this.status,
     );
   }

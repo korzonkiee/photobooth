@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
@@ -16,11 +18,17 @@ class SessionCubit extends Cubit<SessionState> {
   })  : _sessionId = sessionId,
         _sessionRepository = sessionRepository,
         _photosRepository = photosRepository,
-        super(const SessionState(status: SessionStatus.initial));
+        super(const SessionState(status: SessionStatus.initial)) {
+    _sessionSub = _sessionRepository.getSession(sessionId).listen((session) {
+      emit(state.copyWith(session: session));
+    });
+  }
 
   final String _sessionId;
   final SessionRepository _sessionRepository;
   final PhotosRepository _photosRepository;
+
+  StreamSubscription<Session>? _sessionSub;
 
   Future<void> uploadImage({
     required CameraImage image,
@@ -58,5 +66,11 @@ class SessionCubit extends Cubit<SessionState> {
       emit(state.copyWith(status: SessionStatus.uploadingError));
       addError(error, stackTrace);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _sessionSub?.cancel();
+    return super.close();
   }
 }

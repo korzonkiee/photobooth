@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:io_photobooth/photobooth/photobooth.dart';
 import 'package:io_photobooth/session/session.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
+import 'package:photos_repository/photos_repository.dart';
+import 'package:session_repository/session_repository.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
 
 const _videoConstraints = VideoConstraints(
@@ -105,17 +107,30 @@ class _SessionViewState extends State<SessionView> {
         ? PhotoboothAspectRatio.portrait
         : PhotoboothAspectRatio.landscape;
     return Scaffold(
-      body: _PhotoboothBackground(
-        aspectRatio: aspectRatio,
-        child: Camera(
-          controller: _controller,
-          placeholder: (_) => const SizedBox(),
-          preview: (context, preview) => PhotoboothPreview(
-            preview: preview,
-            onSnapPressed: () => _onSnapPressed(aspectRatio: aspectRatio),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          _PhotoboothBackground(
+            aspectRatio: aspectRatio,
+            child: Camera(
+              controller: _controller,
+              placeholder: (_) => const SizedBox(),
+              preview: (context, preview) => PhotoboothPreview(
+                preview: preview,
+                onSnapPressed: () => _onSnapPressed(aspectRatio: aspectRatio),
+              ),
+              error: (context, error) => PhotoboothError(error: error),
+            ),
           ),
-          error: (context, error) => PhotoboothError(error: error),
-        ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 64,
+            child: _SessionPrompt(
+              sessionId: widget.sessionId,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -146,6 +161,53 @@ class _PhotoboothBackground extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SessionPrompt extends StatelessWidget {
+  const _SessionPrompt({
+    Key? key,
+    required this.sessionId,
+  }) : super(key: key);
+
+  final String sessionId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SessionCubit(
+        sessionId: sessionId,
+        photosRepository: context.read<PhotosRepository>(),
+        sessionRepository: context.read<SessionRepository>(),
+      ),
+      child: const _SessionPromptView(),
+    );
+  }
+}
+
+class _SessionPromptView extends StatelessWidget {
+  const _SessionPromptView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SessionCubit, SessionState>(
+      builder: (context, state) {
+        return Center(
+          child: Card(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Text(
+                state.session?.prompt ?? '',
+                style: Theme.of(context).textTheme.headline1?.copyWith(
+                      color: Colors.black,
+                    ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
