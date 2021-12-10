@@ -13,7 +13,7 @@ class SessionSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SessionSetupBloc(),
+      create: (_) => SessionSetupCubit(),
       child: const SessionSetupView(),
     );
   }

@@ -1,4 +1,4 @@
-part of 'session_setup_bloc.dart';
+part of 'session_setup_cubit.dart';
 
 class SessionSetupState extends Equatable {
   const SessionSetupState();

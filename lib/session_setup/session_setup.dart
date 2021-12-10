@@ -1,2 +1,2 @@
-export 'bloc/session_setup_bloc.dart';
+export 'cubit/session_setup_cubit.dart';
 export 'view/session_setup_page.dart';
