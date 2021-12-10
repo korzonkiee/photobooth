@@ -18,11 +18,12 @@ const _videoConstraints = VideoConstraints(
 );
 
 class SessionPage extends StatelessWidget {
-  const SessionPage({Key? key}) : super(key: key);
+  const SessionPage({
+    Key? key,
+    required this.sessionId,
+  }) : super(key: key);
 
-  static Route route() {
-    return AppPageRoute(builder: (_) => const SessionPage());
-  }
+  final String sessionId;
 
   @override
   Widget build(BuildContext context) {
