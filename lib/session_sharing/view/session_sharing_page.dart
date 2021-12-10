@@ -1,5 +1,8 @@
+import 'dart:ui' as ui;
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:io_photobooth/session_sharing/session_sharing.dart';
@@ -33,10 +36,37 @@ class SessionSharingView extends StatefulWidget {
 }
 
 class _SessionSharingViewState extends State<SessionSharingView> {
+  late final GlobalKey _collageKey;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _collageKey = GlobalKey();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<SessionSharingCubit>().state;
     final prompt = state.session?.prompt;
+
+    Future<void> _saveCollage() async {
+      final boundary = _collageKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary != null) {
+        final image = await boundary.toImage();
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        final pngBytes = byteData?.buffer.asUint8List();
+        if (pngBytes != null) {
+          final file = XFile.fromData(
+            pngBytes,
+            name: '$prompt.png',
+            mimeType: 'image/png',
+          );
+          await file.saveTo('');
+        }
+      }
+    }
 
     return BlocListener<SessionSharingCubit, SessionSharingState>(
       listener: (context, state) {
@@ -45,6 +75,14 @@ class _SessionSharingViewState extends State<SessionSharingView> {
         }
       },
       child: Scaffold(
+        floatingActionButton: state.status == SessionSharingStatus.success
+            ? FloatingActionButton(
+                onPressed: () async {
+                  await _saveCollage();
+                },
+                child: const Icon(Icons.download),
+              )
+            : null,
         appBar: AppBar(
           leading: IconButton(
             onPressed: () => context.go('/'),
@@ -75,21 +113,24 @@ class _SessionSharingViewState extends State<SessionSharingView> {
                 else
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Wrap(
-                      children: [
-                        for (final url in state.downloadablePhotoUrls!) ...[
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 500),
-                            child: Material(
-                              elevation: 2,
-                              borderRadius: BorderRadius.circular(8),
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: Image.network(url),
+                    child: RepaintBoundary(
+                      key: _collageKey,
+                      child: Wrap(
+                        children: [
+                          for (final url in state.downloadablePhotoUrls!) ...[
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 500),
+                              child: Material(
+                                elevation: 2,
+                                borderRadius: BorderRadius.circular(8),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: Image.network(url),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
+                            const SizedBox(width: 8),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
               ],
