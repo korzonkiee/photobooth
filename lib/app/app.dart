@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:io_photobooth/l10n/l10n.dart';
 import 'package:io_photobooth/landing/landing.dart';
 import 'package:io_photobooth/session/session.dart';
+import 'package:io_photobooth/session_sharing/session_sharing.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:photos_repository/photos_repository.dart';
 import 'package:session_repository/session_repository.dart';
@@ -55,6 +56,12 @@ class _App extends StatelessWidget {
       GoRoute(
         path: '/session/:id',
         builder: (context, state) => SessionPage(
+          sessionId: state.params['id']!,
+        ),
+      ),
+      GoRoute(
+        path: '/shared_session/:id',
+        builder: (context, state) => SessionSharingPage(
           sessionId: state.params['id']!,
         ),
       ),
