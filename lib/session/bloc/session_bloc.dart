@@ -32,6 +32,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   @override
   Stream<Transition<SessionEvent, SessionState>> transformEvents(
     Stream<SessionEvent> events,
+    // ignore: deprecated_member_use
     TransitionFunction<SessionEvent, SessionState> transitionFn,
   ) {
     return Rx.merge([

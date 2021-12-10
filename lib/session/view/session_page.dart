@@ -82,7 +82,7 @@ class _SessionViewState extends State<SessionView> {
     await _play();
   }
 
-  void _onSnapPressed({required double aspectRatio}) async {
+  Future<void> _onSnapPressed({required double aspectRatio}) async {
     final picture = await _controller.takePicture();
     context
         .read<SessionBloc>()
