@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:io_photobooth/photobooth/photobooth.dart';
-import 'package:io_photobooth/stickers/stickers.dart';
+import 'package:io_photobooth/session/session.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
 
@@ -31,7 +31,7 @@ class SessionPage extends StatelessWidget {
       create: (_) => PhotoboothBloc(),
       child: Navigator(
         onGenerateRoute: (_) => AppPageRoute(
-          builder: (_) => const SessionView(),
+          builder: (_) => SessionView(sessionId: sessionId),
         ),
       ),
     );
@@ -39,7 +39,12 @@ class SessionPage extends StatelessWidget {
 }
 
 class SessionView extends StatefulWidget {
-  const SessionView({Key? key}) : super(key: key);
+  const SessionView({
+    Key? key,
+    required this.sessionId,
+  }) : super(key: key);
+
+  final String sessionId;
 
   @override
   _SessionViewState createState() => _SessionViewState();
@@ -88,7 +93,7 @@ class _SessionViewState extends State<SessionView> {
     context
         .read<PhotoboothBloc>()
         .add(PhotoCaptured(aspectRatio: aspectRatio, image: picture));
-    final stickersPage = StickersPage.route();
+    final stickersPage = SessionStickersPage.route(sessionId: widget.sessionId);
     await _stop();
     unawaited(Navigator.of(context).pushReplacement(stickersPage));
   }
