@@ -122,26 +122,3 @@ class _LoadingText extends StatelessWidget {
     );
   }
 }
-
-class _PromptHeader extends StatelessWidget {
-  const _PromptHeader({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    final prompt = context
-        .select((SessionSharingCubit cubit) => cubit.state.session!.prompt);
-
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          prompt,
-          style: textTheme.headline2,
-        ),
-      ),
-    );
-  }
-}
