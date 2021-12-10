@@ -339,5 +339,17 @@
     "clearAllStickersButtonLabelText": "Clear all props",
     "@clearAllStickersButtonLabelText": {
         "description": "Semantic label for the clear all stickers button"
+    },
+    "notFoundPageHeading": "404 Page Not Found!",
+    "@notFoundPageHeading": {
+        "description": "Heading shown on the not found page."
+    },
+    "notFoundPageSubheading": "Insert pun or funny text about getting lost.",
+    "@notFoundPageSubheading": {
+        "description": "Subheading shown on the not found page."
+    },
+		"notFoundPageGoHomeButtonText": "Go Home",
+    "@notFoundPageGoHomeButtonText": {
+        "description": "Button text shown on the not found page which navigates back to the home page."
     }
 }
