@@ -19,7 +19,14 @@ class Session extends Equatable {
     required this.createdAt,
     required this.prompt,
     required this.photoUrls,
-  });
+  }) : isInvalid = false;
+
+  Session.invalid()
+      : id = 'invalid',
+        isInvalid = true,
+        createdAt = DateTime.now(),
+        prompt = '',
+        photoUrls = [];
 
   /// Deserializes a [Session] from a JSON object.
   factory Session.fromJson(Map<String, dynamic> json) =>
@@ -44,6 +51,9 @@ class Session extends Equatable {
   /// This is the list of Firebase Storage URLs of the photos taken during the
   /// session.
   final List<String> photoUrls;
+
+  /// Indicates whether the session is invalid or does not exist.
+  final bool isInvalid;
 
   /// Serializes a [Session] to a JSON object.
   Map<String, dynamic> toJson() => _$SessionToJson(this);

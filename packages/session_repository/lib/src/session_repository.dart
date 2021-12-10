@@ -17,7 +17,6 @@ class SessionRepository {
   })  : _firebaseStorage = firebaseStorage,
         _firebaseFirestore = firebaseFirestore;
 
-  // ignore: unused_field
   final FirebaseStorage _firebaseStorage;
   final FirebaseFirestore _firebaseFirestore;
 
@@ -55,8 +54,17 @@ class SessionRepository {
           .collection('sessions')
           .doc(id)
           .snapshots()
-          .map((d) => d.data()!)
-          .map((json) => Session.fromJson(json)),
+          .map((d) => d.data())
+          .map(
+            (json) => json == null ? Session.invalid() : Session.fromJson(json),
+          )
+          .transform(
+        StreamTransformer.fromHandlers(
+          handleError: (error, stackTrace, sink) {
+            sink.add(Session.invalid());
+          },
+        ),
+      ),
     );
 
     _cachedSessions[id] = sub;
