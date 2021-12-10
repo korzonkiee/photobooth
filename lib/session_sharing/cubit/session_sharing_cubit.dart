@@ -6,7 +6,7 @@ part 'session_sharing_state.dart';
 
 class SessionSharingCubit extends Cubit<SessionSharingState> {
   SessionSharingCubit({
-    // TODO: USE sessionRepository
+    // TODO(alejandro): USE sessionRepository
     // ignore: avoid_unused_constructor_parameters
     required SessionRepository sessionRepository,
   }) : super(const SessionSharingState.initial());
