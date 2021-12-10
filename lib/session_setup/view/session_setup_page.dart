@@ -24,9 +24,61 @@ class SessionSetupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Start your session!'),
+    final cubit = context.watch<SessionSetupCubit>();
+    final state = cubit.state;
+
+    return Scaffold(
+      floatingActionButton: state.selectedPrompt.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () {
+                //
+              },
+              child: const Icon(Icons.forward),
+            )
+          : null,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+              'Choose a prompt bellow:',
+              style: Theme.of(context).textTheme.headline3,
+            ),
+            TextField(
+              onChanged: cubit.changedQuery,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  children: [
+                    for (final prompt in state.promptList)
+                      InkWell(
+                        onTap: () {
+                          cubit.selectPrompt(prompt);
+                        },
+                        child: Container(
+                          width: 240,
+                          height: 120,
+                          padding: const EdgeInsets.all(8),
+                          child: Card(
+                            color: prompt == state.selectedPrompt
+                                ? Theme.of(context).primaryColor
+                                : null,
+                            child: Center(
+                              child: Text(
+                                prompt,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
