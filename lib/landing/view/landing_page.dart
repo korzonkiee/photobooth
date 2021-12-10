@@ -6,6 +6,10 @@ import 'package:photobooth_ui/photobooth_ui.dart';
 class LandingPage extends StatelessWidget {
   const LandingPage({Key? key}) : super(key: key);
 
+  static Route route() {
+    return AppPageRoute(builder: (_) => const LandingPage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
