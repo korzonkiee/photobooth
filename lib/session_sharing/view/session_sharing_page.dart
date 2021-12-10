@@ -75,8 +75,7 @@ class _SessionSharingViewState extends State<SessionSharingView> {
                 else
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    child: Wrap(
                       children: [
                         for (final url in state.downloadablePhotoUrls!) ...[
                           ConstrainedBox(
