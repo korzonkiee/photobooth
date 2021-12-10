@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, always_use_package_imports
 import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
@@ -18,7 +18,7 @@ import 'package:very_good_analysis/very_good_analysis.dart';
 import 'landing/loading_indicator_io.dart'
     if (dart.library.html) 'landing/loading_indicator_web.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = AppBlocObserver();
   FlutterError.onError = (details) {

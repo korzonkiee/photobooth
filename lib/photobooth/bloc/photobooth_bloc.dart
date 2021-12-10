@@ -32,6 +32,7 @@ class PhotoboothBloc extends Bloc<PhotoboothEvent, PhotoboothState> {
   @override
   Stream<Transition<PhotoboothEvent, PhotoboothState>> transformEvents(
     Stream<PhotoboothEvent> events,
+    // ignore: deprecated_member_use
     TransitionFunction<PhotoboothEvent, PhotoboothState> transitionFn,
   ) {
     return Rx.merge([
