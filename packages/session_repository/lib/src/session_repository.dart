@@ -88,7 +88,7 @@ class SessionRepository {
     await photoRef.putData(photo);
 
     // 2. Get the URLs
-    final photoUrl = photoRef.fullPath;
+    final photoUrl = 'gs://${photoRef.bucket}/${photoRef.fullPath}';
 
     // 3. Run an update-array transaction on the session with the given ID.
     final docRef = _firebaseFirestore.collection('sessions').doc(sessionId);
