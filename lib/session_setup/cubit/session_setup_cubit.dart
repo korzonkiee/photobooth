@@ -20,7 +20,14 @@ class SessionSetupCubit extends Cubit<SessionSetupState> {
         .where((element) => element.toLowerCase().contains(value.toLowerCase()))
         .toList();
 
-    emit(state.copyWith(promptList: filtered));
+    emit(
+      state.copyWith(
+        promptList: [
+          if (value.isNotEmpty) value,
+          ...filtered,
+        ],
+      ),
+    );
   }
 
   void selectPrompt(String value) {
