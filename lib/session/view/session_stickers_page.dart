@@ -249,6 +249,7 @@ class _NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final status = context.select((SessionCubit cubit) => cubit.state.status);
     return Semantics(
       focusable: true,
       button: true,
@@ -257,29 +258,31 @@ class _NextButton extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         shape: const CircleBorder(),
         color: PhotoboothColors.transparent,
-        child: InkWell(
-          key: const Key('stickersPage_next_inkWell'),
-          onTap: () async {
-            final confirmed = await showAppModal<bool>(
-              context: context,
-              landscapeChild: const _NextConfirmationDialogContent(),
-              portraitChild: const _NextConfirmationBottomSheet(),
-            );
-            if (confirmed ?? false) {
-              final state = context.read<PhotoboothBloc>().state;
-              await context.read<SessionCubit>().uploadImage(
-                    image: state.image!,
-                    aspectRatio: state.aspectRatio,
-                    assets: state.assets,
+        child: status == SessionStatus.uploading
+            ? const CircularProgressIndicator()
+            : InkWell(
+                key: const Key('stickersPage_next_inkWell'),
+                onTap: () async {
+                  final confirmed = await showAppModal<bool>(
+                    context: context,
+                    landscapeChild: const _NextConfirmationDialogContent(),
+                    portraitChild: const _NextConfirmationBottomSheet(),
                   );
-              context.go('/shared_session/$sessionId');
-            }
-          },
-          child: Image.asset(
-            'assets/icons/go_next_button_icon.png',
-            height: 100,
-          ),
-        ),
+                  if (confirmed ?? false) {
+                    final state = context.read<PhotoboothBloc>().state;
+                    await context.read<SessionCubit>().uploadImage(
+                          image: state.image!,
+                          aspectRatio: state.aspectRatio,
+                          assets: state.assets,
+                        );
+                    context.go('/shared_session/$sessionId');
+                  }
+                },
+                child: Image.asset(
+                  'assets/icons/go_next_button_icon.png',
+                  height: 100,
+                ),
+              ),
       ),
     );
   }
