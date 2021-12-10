@@ -6,16 +6,19 @@ import 'package:io_photobooth/l10n/l10n.dart';
 import 'package:io_photobooth/landing/landing.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:photos_repository/photos_repository.dart';
+import 'package:session_repository/session_repository.dart';
 
 class App extends StatelessWidget {
   const App({
     Key? key,
     required this.authenticationRepository,
     required this.photosRepository,
+    required this.sessionRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
   final PhotosRepository photosRepository;
+  final SessionRepository sessionRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +26,7 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: authenticationRepository),
         RepositoryProvider.value(value: photosRepository),
+        RepositoryProvider.value(value: sessionRepository),
       ],
       child: AnimatedFadeIn(
         child: ResponsiveLayoutBuilder(

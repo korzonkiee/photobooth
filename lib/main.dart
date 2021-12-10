@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,6 +14,7 @@ import 'package:io_photobooth/app/app.dart';
 import 'package:io_photobooth/app/app_bloc_observer.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:photos_repository/photos_repository.dart';
+import 'package:session_repository/session_repository.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
 
 import 'landing/loading_indicator_io.dart'
@@ -31,6 +33,10 @@ Future<void> main() async {
   );
   final photosRepository = PhotosRepository(
     firebaseStorage: FirebaseStorage.instance,
+  );
+  final sessionRepository = SessionRepository(
+    firebaseStorage: FirebaseStorage.instance,
+    firebaseFirestore: FirebaseFirestore.instance,
   );
 
   unawaited(
@@ -53,6 +59,7 @@ Future<void> main() async {
     () => runApp(App(
       authenticationRepository: authenticationRepository,
       photosRepository: photosRepository,
+      sessionRepository: sessionRepository,
     )),
     (error, stackTrace) {
       print(error.toString());
