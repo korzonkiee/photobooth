@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:io_photobooth/session/session.dart';
+import 'package:io_photobooth/photobooth/photobooth.dart';
 import 'package:io_photobooth/stickers/stickers.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
@@ -27,7 +27,7 @@ class SessionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SessionBloc(),
+      create: (_) => PhotoboothBloc(),
       child: Navigator(
         onGenerateRoute: (_) => AppPageRoute(
           builder: (_) => const SessionView(),
@@ -85,7 +85,7 @@ class _SessionViewState extends State<SessionView> {
   Future<void> _onSnapPressed({required double aspectRatio}) async {
     final picture = await _controller.takePicture();
     context
-        .read<SessionBloc>()
+        .read<PhotoboothBloc>()
         .add(PhotoCaptured(aspectRatio: aspectRatio, image: picture));
     final stickersPage = StickersPage.route();
     await _stop();
@@ -99,7 +99,7 @@ class _SessionViewState extends State<SessionView> {
         ? PhotoboothAspectRatio.portrait
         : PhotoboothAspectRatio.landscape;
     return Scaffold(
-      body: _SessionBackground(
+      body: _PhotoboothBackground(
         aspectRatio: aspectRatio,
         child: Camera(
           controller: _controller,
@@ -115,8 +115,8 @@ class _SessionViewState extends State<SessionView> {
   }
 }
 
-class _SessionBackground extends StatelessWidget {
-  const _SessionBackground({
+class _PhotoboothBackground extends StatelessWidget {
+  const _PhotoboothBackground({
     Key? key,
     required this.aspectRatio,
     required this.child,
