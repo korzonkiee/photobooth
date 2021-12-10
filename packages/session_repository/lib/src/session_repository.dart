@@ -24,6 +24,25 @@ class SessionRepository {
   /// A list of cached session strams by session id.
   final _cachedSessions = <String, BehaviorSubscription<Session>>{};
 
+  /// Creates a new session with the given [prompt].
+  /// Afterwards, returns a stream of the session from [getSession].
+  Future<ValueStream<Session>> createSession({
+    required String prompt,
+  }) async {
+    final ref = _firebaseFirestore.collection('sessions').doc();
+    final id = ref.id;
+
+    final session = Session(
+      id: id,
+      prompt: prompt,
+      createdAt: DateTime.now(),
+      photoUrls: const [],
+    );
+    await ref.set(session.toJson());
+
+    return getSession(id);
+  }
+
   /// Returns a [Stream] of the [Session] with the given [id].
   ValueStream<Session> getSession(String id) {
     final cachedSubscription = _cachedSessions[id];
@@ -62,11 +81,22 @@ class SessionRepository {
   Future<void> uploadSessionPhoto({
     required String sessionId,
     required Uint8List photo,
-  }) {
+  }) async {
     // 1. Upload to Firebase Storage
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+    final photoRef = _firebaseStorage.ref().child('$sessionId/$id.png');
+    await photoRef.putData(photo);
+
     // 2. Get the URLs
+    final photoUrl = photoRef.fullPath;
+
     // 3. Run an update-array transaction on the session with the given ID.
-    return Future<void>.delayed(const Duration(seconds: 1));
+    final docRef = _firebaseFirestore.collection('sessions').doc(sessionId);
+    await docRef.update(
+      {
+        'photo_urls': FieldValue.arrayUnion([photoUrl]),
+      },
+    );
   }
 }
 
