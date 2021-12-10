@@ -56,7 +56,7 @@ class ShareUrls {
   final String twitterShareUrl;
 }
 
-const _shareUrl = 'https://io-photobooth-dev.web.app/share';
+const _shareUrl = 'https://vgv-groupbooth.web.app/share';
 
 /// {@template photos_repository}
 /// Repository that persists photos in a Firebase Storage.
@@ -85,7 +85,7 @@ class PhotosRepository {
     } catch (e, st) {
       throw UploadPhotoException(
         'Uploading photo $fileName failed. '
-        'Couldn\'t get storage reference \'uploads/$fileName\'.'
+        "Couldn't get storage reference 'uploads/$fileName'. "
         'Error: $e. StackTrace: $st',
       );
     }
@@ -103,7 +103,7 @@ class PhotosRepository {
     } catch (error, stackTrace) {
       throw UploadPhotoException(
         'Uploading photo $fileName failed. '
-        'Couldn\'t upload data to ${reference.fullPath}.'
+        "Couldn't upload data to ${reference.fullPath}. "
         'Error: $error. StackTrace: $stackTrace',
       );
     }

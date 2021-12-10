@@ -11,15 +11,19 @@ jobs:
     name: Deploy Development
     steps:
       - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1.5.0
+
+      - uses: subosito/flutter-action@v1.5.3
         with:
-          channel: master
+          channel: stable
+
       - run: flutter packages get
-      - run: flutter build web --web-renderer html --dart-define SHARING_ENABLED=true
+
+      - run: flutter build web --web-renderer html
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PHOTOBOOTH_DEV }}"
-          projectId: io-photobooth-dev
+          projectId: vgv-groupbooth
           expires: 30d
           channelId: live

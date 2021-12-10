@@ -1,6 +1,6 @@
-name: io_photobooth
+name: vgv-groupbooth
 
-on: [pull_request, push]
+on: [pull_request]
 
 jobs:
   build:
@@ -8,9 +8,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1.5.0
+      - uses: subosito/flutter-action@v1.5.3
         with:
-          channel: master
+          channel: stable
 
       - name: Install Dependencies
         run: flutter packages get
@@ -23,6 +23,3 @@ jobs:
 
       - name: Run tests
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
-
-      - name: Check Code Coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v1.1.1

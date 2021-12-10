@@ -1,3 +1,5 @@
+// ignore_for_file: always_use_package_imports
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -45,7 +47,7 @@ class _OffscreenCompositor {
     final imageFutures = <Future<HtmlImage>>[];
 
     /// Load assets in parallel.
-    var imageFuture = HtmlImageLoader(data).loadImage();
+    final imageFuture = HtmlImageLoader(data).loadImage();
     for (var layerIndex = 0; layerIndex < layers.length; layerIndex++) {
       final imageFuture =
           HtmlImageLoader(layers[layerIndex].assetPath).loadImage();
@@ -86,10 +88,10 @@ class _OffscreenCompositor {
       imageCropOffsetY = (croppedHeight - height) ~/ 2;
     }
 
-    var insideFrameX = _frameBorderSize;
-    var insideFrameY = _frameBorderSize;
-    var insideFrameWidth = frameImage.width - (2 * _frameBorderSize);
-    var insideFrameHeight = insideFrameWidth ~/ targetAspectRatio;
+    const insideFrameX = _frameBorderSize;
+    const insideFrameY = _frameBorderSize;
+    final insideFrameWidth = frameImage.width - (2 * _frameBorderSize);
+    final insideFrameHeight = insideFrameWidth ~/ targetAspectRatio;
 
     /// Render images to offscreen canvas.
     final canvas = OffScreenCanvas(targetWidth, targetHeight)
@@ -119,24 +121,26 @@ class _OffscreenCompositor {
 
     for (var layerIndex = 0; layerIndex < layers.length; layerIndex++) {
       final layer = layers[layerIndex];
-      var asset = await imageFutures[layerIndex];
+      final asset = await imageFutures[layerIndex];
 
       /// Normalize coordinates to 0..1 based on original video image size.
       /// then scale to target.
-      var assetDxPercent = layer.position.x / layer.constraints.x;
-      var assetDyPercent = layer.position.y / layer.constraints.y;
-      var assetWidthPercent = layer.size.x / layer.constraints.x;
-      var assetDx = assetDxPercent * insideFrameWidth;
-      var assetDy = assetDyPercent * insideFrameHeight;
-      var assetWidth = assetWidthPercent * insideFrameWidth;
+      final assetDxPercent = layer.position.x / layer.constraints.x;
+      final assetDyPercent = layer.position.y / layer.constraints.y;
+      final assetWidthPercent = layer.size.x / layer.constraints.x;
+      final assetDx = assetDxPercent * insideFrameWidth;
+      final assetDy = assetDyPercent * insideFrameHeight;
+      final assetWidth = assetWidthPercent * insideFrameWidth;
 
       /// Keep aspect ratio of asset since it is centered in layer.
-      var assetHeight = assetWidth * asset.height / asset.width;
+      final assetHeight = assetWidth * asset.height / asset.width;
 
       canvas
         ..save()
-        ..translate((insideFrameX + assetDx).toDouble(),
-            (insideFrameY + assetDy).toDouble())
+        ..translate(
+          (insideFrameX + assetDx),
+          (insideFrameY + assetDy),
+        )
         ..translate(assetWidth / 2, assetHeight / 2)
         ..rotate(layer.angle)
         ..translate(-assetWidth / 2, -assetHeight / 2)
