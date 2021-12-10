@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:io_photobooth/session_setup/session_setup.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
 import 'package:session_repository/session_repository.dart';
@@ -37,8 +38,8 @@ class SessionSetupView extends StatelessWidget {
             ),
           );
         } else if (state.status == SessionSetupStatus.success) {
-          print(state.createdSessionId);
-          // TODO Navigate
+          final createdSessionId = state.createdSessionId;
+          context.go('/session/$createdSessionId');
         }
       },
       builder: (context, state) {
