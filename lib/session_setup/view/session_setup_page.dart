@@ -61,7 +61,7 @@ class SessionSetupView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Choose a prompt bellow:',
+                    'Choose a prompt below:',
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   SizedBox(
@@ -122,7 +122,6 @@ class _PromptCardState extends State<PromptCard> {
   bool _hover = false;
 
   static const _normalSize = Size(240, 120);
-  static const _effectSize = Size(260, 140);
 
   @override
   Widget build(BuildContext context) {
@@ -140,30 +139,24 @@ class _PromptCardState extends State<PromptCard> {
             _hover = false;
           });
         },
-        child: SizedBox(
-          width: _normalSize.width,
-          height: _normalSize.height,
-          child: OverflowBox(
-            maxWidth: _effectSize.width,
-            maxHeight: _effectSize.height,
-            child: AnimatedSize(
-              curve: Curves.easeIn,
-              duration: const Duration(seconds: 5),
-              child: Container(
-                width: isBig ? _effectSize.width : _normalSize.width,
-                height: isBig ? _effectSize.height : _normalSize.height,
-                padding: const EdgeInsets.all(8),
-                child: Card(
-                  color:
-                      widget.selected ? Theme.of(context).primaryColor : null,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        widget.prompt,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+        child: AnimatedContainer(
+          transformAlignment: Alignment.center,
+          transform:
+              isBig ? (Matrix4.identity()..scale(1.1)) : Matrix4.identity(),
+          curve: Curves.easeIn,
+          duration: const Duration(milliseconds: 250),
+          child: Container(
+            width: _normalSize.width,
+            height: _normalSize.height,
+            padding: const EdgeInsets.all(8),
+            child: Card(
+              color: widget.selected ? Theme.of(context).primaryColor : null,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    widget.prompt,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
