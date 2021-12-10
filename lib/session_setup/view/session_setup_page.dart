@@ -56,34 +56,44 @@ class SessionSetupView extends StatelessWidget {
               : null,
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Text(
-                  'Choose a prompt bellow:',
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-                TextField(
-                  onChanged: context.read<SessionSetupCubit>().changedQuery,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      children: [
-                        for (final prompt in state.promptList)
-                          PromptCard(
-                            prompt: prompt,
-                            selected: prompt == state.selectedPrompt,
-                            onTap: () {
-                              context
-                                  .read<SessionSetupCubit>()
-                                  .selectPrompt(prompt);
-                            },
-                          ),
-                      ],
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Choose a prompt bellow:',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  SizedBox(
+                    width: 400,
+                    child: TextField(
+                      onChanged: context.read<SessionSetupCubit>().changedQuery,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                        hintText: 'Filter or create a custom one here',
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        children: [
+                          for (final prompt in state.promptList)
+                            PromptCard(
+                              prompt: prompt,
+                              selected: prompt == state.selectedPrompt,
+                              onTap: () {
+                                context
+                                    .read<SessionSetupCubit>()
+                                    .selectPrompt(prompt);
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -92,7 +102,7 @@ class SessionSetupView extends StatelessWidget {
   }
 }
 
-class PromptCard extends StatelessWidget {
+class PromptCard extends StatefulWidget {
   const PromptCard({
     Key? key,
     required this.prompt,
@@ -105,19 +115,58 @@ class PromptCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<PromptCard> createState() => _PromptCardState();
+}
+
+class _PromptCardState extends State<PromptCard> {
+  bool _hover = false;
+
+  static const _normalSize = Size(240, 120);
+  static const _effectSize = Size(260, 140);
+
+  @override
   Widget build(BuildContext context) {
+    final isBig = _hover || widget.selected;
     return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 240,
-        height: 120,
-        padding: const EdgeInsets.all(8),
-        child: Card(
-          color: selected ? Theme.of(context).primaryColor : null,
-          child: Center(
-            child: Text(
-              prompt,
-              textAlign: TextAlign.center,
+      onTap: widget.onTap,
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            _hover = true;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            _hover = false;
+          });
+        },
+        child: SizedBox(
+          width: _normalSize.width,
+          height: _normalSize.height,
+          child: OverflowBox(
+            maxWidth: _effectSize.width,
+            maxHeight: _effectSize.height,
+            child: AnimatedSize(
+              curve: Curves.easeIn,
+              duration: const Duration(seconds: 5),
+              child: Container(
+                width: isBig ? _effectSize.width : _normalSize.width,
+                height: isBig ? _effectSize.height : _normalSize.height,
+                padding: const EdgeInsets.all(8),
+                child: Card(
+                  color:
+                      widget.selected ? Theme.of(context).primaryColor : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        widget.prompt,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
