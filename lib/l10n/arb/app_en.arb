@@ -12,6 +12,10 @@
     "@landingPageTakePhotoButtonText": {
         "description": "Button text shown on the landing page which navigates to the photo booth."
     },
+    "landingPageSessionSetupButtonText": "Create a new session",
+    "@landingPageSessionSetupButtonText": {
+        "description": "Button text shown on the landing page which navigates to the session setup."
+    },
     "footerMadeWithText": "Made with ",
     "@footerMadeWithText": {
         "description": "Text shown on the footer which mentions technologies used to build the app."
