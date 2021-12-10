@@ -21,7 +21,7 @@ class SessionRepository {
   final FirebaseStorage _firebaseStorage;
   final FirebaseFirestore _firebaseFirestore;
 
-  /// A list of cached session strams by session id.
+  /// A list of cached session streams by session id.
   final _cachedSessions = <String, BehaviorSubscription<Session>>{};
 
   /// Creates a new session with the given [prompt].

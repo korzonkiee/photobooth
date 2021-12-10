@@ -4,8 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:io_photobooth/footer/footer.dart';
 import 'package:io_photobooth/l10n/l10n.dart';
 import 'package:io_photobooth/photobooth/photobooth.dart';
+import 'package:io_photobooth/session/session.dart';
 import 'package:io_photobooth/stickers/stickers.dart';
 import 'package:photobooth_ui/photobooth_ui.dart';
+import 'package:photos_repository/photos_repository.dart';
+import 'package:session_repository/session_repository.dart';
 import 'package:very_good_analysis/very_good_analysis.dart';
 
 const _initialStickerScale = 0.25;
@@ -29,8 +32,19 @@ class SessionStickersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => StickersBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => StickersBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SessionCubit(
+            sessionId: sessionId,
+            photosRepository: context.read<PhotosRepository>(),
+            sessionRepository: context.read<SessionRepository>(),
+          ),
+        ),
+      ],
       child: SessionStickersView(
         sessionId: sessionId,
       ),
@@ -252,6 +266,12 @@ class _NextButton extends StatelessWidget {
               portraitChild: const _NextConfirmationBottomSheet(),
             );
             if (confirmed ?? false) {
+              final state = context.read<PhotoboothBloc>().state;
+              await context.read<SessionCubit>().uploadImage(
+                    image: state.image!,
+                    aspectRatio: state.aspectRatio,
+                    assets: state.assets,
+                  );
               context.go('/shared_session/$sessionId');
             }
           },
